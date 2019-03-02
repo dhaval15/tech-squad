@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:map_view/map_view.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:gplacespicker/gplacespicker.dart';
 import 'package:relay/relay.dart';
 import './nav.dart';
 
@@ -22,20 +24,11 @@ class SelectionState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    var _mapView = MapView();
-                    _mapView.show(MapOptions(
-                      title: 'Select Source Destination',
-                      mapViewType: MapViewType.normal,
-                      showMyLocationButton: true,
-                      showUserLocation: true,
-                    ));
+                FlatButton(
+                  onPressed: () async {
+                    await selectMapA(context);
                   },
-                  child: TextField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Source'),
-                  ),
+                  child: Text('Source'),
                 ),
                 SizedBox(height: 12),
                 TextField(
@@ -67,4 +60,27 @@ class Selection extends ProviderWidget<SelectionStation> {
   SelectionStation createStation() {
     return SelectionStation();
   }
+}
+
+/*Future<LatLong> selectMap(context) async {
+  Location location = Location();
+  var current = await location.getLocation();
+  LatLong loc = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => LocationPickerPage(
+            initialLocation: LatLong(current.latitude, current.latitude),
+            inititialZoom: 9,
+            okButtonText: 'Select',
+            titleText: 'Select Source Location',
+          )));
+  return loc;
+}*/
+
+Future selectMapA(context) async {
+  Prediction p = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: 'AIzaSyDTfMJ4wkmGJ8JubIge0l3lQWzmEabJLbo',
+      mode: Mode.overlay,
+      // Mode.fullscreen
+      language: "en",
+      components: [new Component(Component.country, "en")]);
 }

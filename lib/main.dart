@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:map_view/map_view.dart';
 import 'package:route_finder/home.dart';
 import 'package:relay/relay.dart';
 
 void main() {
-  MapView.setApiKey("<your_api_key>");
+  //MapView.setApiKey("<your_api_key>");
   runApp(MyApp());
 }
 
