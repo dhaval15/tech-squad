@@ -14,6 +14,7 @@ environment:
 
 dependencies:
   relay: any
+  firebase_database: ^2.0.2
   flutter:
     sdk: flutter
 

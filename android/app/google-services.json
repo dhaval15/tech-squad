@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "411655444131",
+    "firebase_url": "https://tech-squad-c7be9.firebaseio.com",
+    "project_id": "tech-squad-c7be9",
+    "storage_bucket": "tech-squad-c7be9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411655444131:android:c34ac93b3a16a3a1",
+        "android_client_info": {
+          "package_name": "com.techsquad.routefinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411655444131-j2lj5gtrnnb6mugit5na2qdjlt6fvuin.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbmtWOdgs24Ym4a2jGTtfdHPgl7Dio5Cs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
