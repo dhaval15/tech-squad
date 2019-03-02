@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:relay/relay.dart';
+import './selection.dart';
 
 enum HomeUpdate { a }
 
@@ -10,15 +11,38 @@ class HomeState extends ProviderState<Home, HomeStation, HomeUpdate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Find'),
+        title: Text('Find Your Route'),
+      ),
+      body: SafeArea(
+        child: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Welcome To Route Finder',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+                ),
+                SizedBox(height: 20),
+                OutlineButton(
+                  onPressed: _toSelection,
+                  child: Text('Enter Your Location'),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
+  }
+
+  void _toSelection() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => Selection()));
   }
 }
 
 class Home extends ProviderWidget<HomeStation> {
-  final HomeStation station = HomeStation();
-
   HomeState createState() => HomeState();
 
   @override
