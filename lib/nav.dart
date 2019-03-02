@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:relay/relay.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 enum NavUpdate { a }
 
@@ -7,6 +8,19 @@ class NavStation extends Station<NavUpdate> {}
 
 class NavState extends ProviderState<Nav, NavStation, NavUpdate>
     with SingleTickerProviderStateMixin {
+  List<Bus> buses = [];
+  Future<DataSnapshot> _bikeFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _bikeFuture = FirebaseDatabase.instance.reference().child('bikes').once();
+    FirebaseDatabase.instance.reference().child('buses').onValue.listen((e) {
+      buses.add(Bus.fromJson(e.snapshot.value));
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -27,14 +41,9 @@ class NavState extends ProviderState<Nav, NavStation, NavUpdate>
             child: TabBarView(
               children: [
                 ListView.builder(
-                  itemCount: 20,
+                  itemCount: buses.length,
                   itemBuilder: (BuildContext context, int index) {
-                    Bus bus = Bus(
-                      arrivalTime: DateTime.now(),
-                      departureTime: DateTime.now().add(Duration(minutes: 27)),
-                      busNo: '${index * index % 9}',
-                      vacantSeats: index,
-                    );
+                    Bus bus = buses[index];
                     return Card(
                       child: ListTile(
                         leading: Column(
@@ -48,11 +57,11 @@ class NavState extends ProviderState<Nav, NavStation, NavUpdate>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              '${bus.arrival} - ${bus.departure} PM',
+                              '${bus.arrival} - ${bus.reaching} PM',
                               style: TextStyle(fontSize: 16),
                             ),
                             Text(
-                              '${bus.waiting.inMinutes}',
+                              '${bus.waiting}',
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
@@ -62,9 +71,14 @@ class NavState extends ProviderState<Nav, NavStation, NavUpdate>
                     );
                   },
                 ),
-                ListTile(
-                  title: Text('Number of available Bikes'),
-                  subtitle: Text('12'),
+                FutureBuilder<DataSnapshot>(
+                  future: _bikeFuture,
+                  builder: (context, snapshot) => ListTile(
+                        title: Text('Number of available Bikes'),
+                        subtitle: Text(snapshot.hasData
+                            ? snapshot.data.value.toString()
+                            : '0'),
+                      ),
                 ),
               ],
             ),
@@ -127,17 +141,40 @@ class Plate extends StatelessWidget {
 
 class Bus {
   final String busNo;
-  final DateTime arrivalTime;
-  final DateTime departureTime;
+  final TimeOfDay aTime;
+  final TimeOfDay rTime;
   final int vacantSeats;
 
-  Bus({this.busNo, this.arrivalTime, this.departureTime, this.vacantSeats});
+  Bus({this.busNo, this.vacantSeats, this.aTime, this.rTime});
 
-  String get arrival => '${arrivalTime.hour}:${arrivalTime.minute}';
+  Map<String, dynamic> toJson() => {
+        'a-time-h ': aTime.hour,
+        'a-time-m': aTime.minute,
+        'r-time-h': rTime.hour,
+        'r-time-m': rTime.minute,
+        'bus_no': busNo,
+        'vacant': vacantSeats,
+      };
 
-  String get departure => '${arrivalTime.hour}:${arrivalTime.minute}';
+  factory Bus.fromJson(Map<String, dynamic> json) => Bus(
+        aTime: TimeOfDay(hour: json['a-time-h'], minute: json['a-time-m']),
+        rTime: TimeOfDay(hour: json['r-time-h'], minute: json['r-time-m']),
+        vacantSeats: json['vacant'],
+        busNo: json['bus_no'],
+      );
 
-  Duration get waiting => Duration(
-      milliseconds: arrivalTime.millisecondsSinceEpoch -
-          departureTime.millisecondsSinceEpoch);
+  String get arrival => '${aTime.hour}:${aTime.minute} ${aTime.hourOfPeriod}';
+
+  String get reaching => '${rTime.hour}:${rTime.minute} ${rTime.hourOfPeriod}';
+
+  String get waiting {
+    int hd = rTime.hour - aTime.hour;
+    int md = aTime.minute - aTime.minute;
+    if (md < 0) {
+      hd--;
+      md = -md;
+    }
+    if (hd == 0) return '$md Minutes';
+    return '$hd Hours And $md Minutes';
+  }
 }

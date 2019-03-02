@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:relay/relay.dart';
+import 'package:route_finder/add_bus.dart';
 import './selection.dart';
 
 enum HomeUpdate { a }
@@ -12,6 +13,13 @@ class HomeState extends ProviderState<Home, HomeStation, HomeUpdate> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Find Your Route'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Text('Add'),
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => AddBus()));
+        },
       ),
       body: SafeArea(
         child: Container(

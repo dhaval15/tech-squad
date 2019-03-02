@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:map_view/map_view.dart';
 import 'package:relay/relay.dart';
 import './nav.dart';
 
@@ -16,13 +17,25 @@ class SelectionState
       ),
       body: SafeArea(
         child: Container(
+          padding: EdgeInsets.all(16),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TextField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Source'),
+                GestureDetector(
+                  onTap: () {
+                    var _mapView = MapView();
+                    _mapView.show(MapOptions(
+                      title: 'Select Source Destination',
+                      mapViewType: MapViewType.normal,
+                      showMyLocationButton: true,
+                      showUserLocation: true,
+                    ));
+                  },
+                  child: TextField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(), labelText: 'Source'),
+                  ),
                 ),
                 SizedBox(height: 12),
                 TextField(
