@@ -41,9 +41,14 @@ class NavState extends ProviderState<Nav, NavStation, NavUpdate>
             child: TabBarView(
               children: [
                 ListView.builder(
-                  itemCount: buses.length,
+                  itemCount: 20,
                   itemBuilder: (BuildContext context, int index) {
-                    Bus bus = buses[index];
+                    //Bus bus = buses[index];
+                    Bus bus = Bus(
+                        vacantSeats: index * index % 3,
+                        aTime: TimeOfDay(hour: 3, minute: 43),
+                        rTime: TimeOfDay(hour: 4, minute: 2),
+                        busNo: 'A${index * 2}');
                     return Card(
                       child: ListTile(
                         leading: Column(
@@ -163,13 +168,13 @@ class Bus {
         busNo: json['bus_no'],
       );
 
-  String get arrival => '${aTime.hour}:${aTime.minute} ${aTime.hourOfPeriod}';
+  String get arrival => '${aTime.hour}:${aTime.minute}';
 
-  String get reaching => '${rTime.hour}:${rTime.minute} ${rTime.hourOfPeriod}';
+  String get reaching => '${rTime.hour}:${rTime.minute}';
 
   String get waiting {
     int hd = rTime.hour - aTime.hour;
-    int md = aTime.minute - aTime.minute;
+    int md = rTime.minute - aTime.minute;
     if (md < 0) {
       hd--;
       md = -md;

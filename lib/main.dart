@@ -14,9 +14,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Route Finder',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.deepOrange,
         ),
         home: Home(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:gplacespicker/gplacespicker.dart';
 import 'package:relay/relay.dart';
 import './nav.dart';
 
-enum SelectionUpdate { a }
+enum SelectionUpdate { sourceUpdate, destUpdate }
 
-class SelectionStation extends Station<SelectionUpdate> {}
+class SelectionStation extends Station<SelectionUpdate> {
+  String source = 'A';
+  String dest = 'B';
+}
 
 class SelectionState
     extends ProviderState<Selection, SelectionStation, SelectionUpdate> {
@@ -24,16 +24,56 @@ class SelectionState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FlatButton(
-                  onPressed: () async {
-                    await selectMapA(context);
-                  },
-                  child: Text('Source'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text('Source :',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 18)),
+                    RelayBuilder(
+                      station: station,
+                      observers: [SelectionUpdate.sourceUpdate],
+                      builder: (context, station) => DropdownButton(
+                            onChanged: (v) {
+                              station.source = v;
+                              station.relay(SelectionUpdate.sourceUpdate);
+                            },
+                            value: station.source,
+                            items: ['A', 'B', 'C', 'D', 'E']
+                                .map((t) => DropdownMenuItem(
+                                      child: Text('Block $t'),
+                                      value: t,
+                                    ))
+                                .toList(),
+                          ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 12),
-                TextField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Destination'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text('Dest :',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 18)),
+                    RelayBuilder(
+                      station: station,
+                      observers: [SelectionUpdate.destUpdate],
+                      builder: (context, station) => DropdownButton(
+                            onChanged: (v) {
+                              station.dest = v;
+                              station.relay(SelectionUpdate.destUpdate);
+                            },
+                            value: station.dest,
+                            items: ['A', 'B', 'C', 'D', 'E']
+                                .map((t) => DropdownMenuItem(
+                                      child: Text('Block $t'),
+                                      value: t,
+                                    ))
+                                .toList(),
+                          ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 12),
                 OutlineButton(
@@ -75,7 +115,7 @@ class Selection extends ProviderWidget<SelectionStation> {
   return loc;
 }*/
 
-Future selectMapA(context) async {
+/*Future selectMapA(context) async {
   Prediction p = await PlacesAutocomplete.show(
       context: context,
       apiKey: 'AIzaSyDTfMJ4wkmGJ8JubIge0l3lQWzmEabJLbo',
@@ -83,4 +123,4 @@ Future selectMapA(context) async {
       // Mode.fullscreen
       language: "en",
       components: [new Component(Component.country, "en")]);
-}
+}*/
